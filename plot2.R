@@ -1,0 +1,15 @@
+library(tidyverse)
+library(lubridate)
+data <- tibble(read.csv(file="household_power_consumption.txt", header=TRUE, sep=";"))
+str(data)
+data$Date <- dmy(data$Date)
+data$Time <- hms(data$Time)
+str(data)
+data <- filter(data, Date > "2007-01-31" & Date < "2007-02-03") %>% mutate(Wochentag = weekdays(Date))
+data$Global_active_power <- as.numeric(data$Global_active_power)
+with(data, plot(x=Global_active_power, type="l", col="black", xlab="", ylab="Global Active Power (kilowatts)", xaxt='n', pch=2))
+axis(1, at=c(0, 1440, 2880), labels=c("Thu", "Fri", "Sat"))
+
+dev.copy(png, file="plot2.png")
+dev.off()
+
